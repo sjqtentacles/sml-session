@@ -1,0 +1,7 @@
+package github.com/sjqtentacles/sml-session
+
+require {
+  github.com/sjqtentacles/sml-cookie
+  github.com/sjqtentacles/sml-random
+  github.com/sjqtentacles/sml-json
+}
