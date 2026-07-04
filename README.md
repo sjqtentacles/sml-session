@@ -13,6 +13,10 @@ Dual-compiler: **MLton + Poly/ML**.
   `get` / `put` / `remove` / `toList` / `fromList`.
 - **JSON serialization** — `toJson` / `fromJson` via
   [sml-json](https://github.com/sjqtentacles/sml-json) (flat object of strings).
+  Integer fields carry an arbitrary-precision `IntInf.int`, so a large value
+  (e.g. a millisecond timestamp like `1700000000000`) round-trips losslessly and
+  identically on MLton (32-bit default `int`) and Poly/ML (63-bit `int`) — both
+  fixed-width, so a naive `int` would overflow past their `Int` range.
 - **`Memory` backend** — an immutable store keyed by session id; `create` mints
   a hex id from an [sml-random](https://github.com/sjqtentacles/sml-random)
   generator and threads it forward, so id streams are reproducible from a seed.
@@ -71,7 +75,7 @@ make test-poly   # Poly/ML
 make all-tests   # both
 ```
 
-**24 deterministic checks**, identical under MLton and Poly/ML.
+**25 deterministic checks**, identical under MLton and Poly/ML.
 
 ## Installation
 
@@ -93,7 +97,7 @@ committed, so `make` needs no network.
 lib/github.com/sjqtentacles/sml-session/
   session.sig  session.sml    model + Memory + SignedCookie backends
   sources.mlb  sml-session.mlb
-test/                         Harness suite (24 checks)
+test/                         Harness suite (25 checks)
 ```
 
 ## License

@@ -38,6 +38,13 @@ struct
         (true, not (isSome (Session.fromJson "not json")))
       val () = checkBool "fromJson non-object -> NONE"
         (true, not (isSome (Session.fromJson "[1,2,3]")))
+      (* A large integer field (e.g. a millisecond timestamp) exceeds a
+         fixed-width Int on both MLton (32-bit default) and Poly/ML (63-bit):
+         it must round-trip losslessly without raising Overflow, since JInt now
+         carries an arbitrary-precision IntInf.int. *)
+      val bigJson = valOf (Session.fromJson "{\"ts\":1700000000000}")
+      val () = checkString "fromJson large int field"
+        ("1700000000000", valOf (Session.get bigJson "ts"))
 
       (* ---- in-memory backend ---- *)
       val () = section "memory backend"
