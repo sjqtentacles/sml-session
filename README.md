@@ -67,6 +67,31 @@ val (sid, store, _) = Session.Memory.create Session.Memory.empty (Random.fromInt
 val SOME loaded     = Session.Memory.load store sid
 ```
 
+## Example
+
+`make example` builds and runs [`examples/demo.sml`](examples/demo.sml), which
+builds a session with `put`, round-trips it through JSON, mints and loads it
+from the `Memory` store with a seeded PRNG id, and encodes/decodes it through
+`SignedCookie` (including rejecting a tampered cookie) (output is
+byte-identical under MLton and Poly/ML):
+
+```
+sml-session demo
+get user = alice
+get role = admin
+toList   = [user=alice, role=admin, theme=dark]
+toJson   = {"user":"alice","role":"admin","theme":"dark"}
+fromJson roundtrip matches original = true
+
+Memory.create id = 532426d45efe67c25d708951015f735e
+Memory.load toList = [user=alice, role=admin, theme=dark]
+after Memory.destroy, load = NONE
+
+SignedCookie.encode = eyJ1c2VyIjoiYWxpY2UiLCJyb2xlIjoiYWRtaW4iLCJ0aGVtZSI6ImRhcmsifQ.iYy8Xka9BjKjP1sYCV8UYNpMGBm5_qIxkHWNR90E5TE
+SignedCookie.decode roundtrip matches = true
+SignedCookie.decode(tampered cookie)  = NONE
+```
+
 ## Build & test
 
 ```sh
